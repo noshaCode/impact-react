@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import CreateQuestion from './components/CreateQuestion';
@@ -8,23 +9,29 @@ import QuestionsList from './components/QuestionsList';
 import ReadQuestion from './components/ReadQuestion';
 import Signup from './components/Signup';
 
+export const UserContext = React.createContext(null)
+
 function App() {
 
+  const [user, setUser] = useState(null);
+
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<QuestionsList />} />
-        <Route path="signup" element={<Signup />} />
-        <Route path="logout" element={<Logout />} />
-        <Route path="questions">
+    <UserContext.Provider value={{user:user, setUser: setUser}}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
           <Route index element={<QuestionsList />} />
-          <Route path=":id" element={<ReadQuestion />} />
-          <Route path="new" element={<CreateQuestion />} />
+          <Route path="signup" element={<Signup />} />
+          <Route path="logout" element={<Logout />} />
+          <Route path="questions">
+            <Route index element={<QuestionsList />} />
+            <Route path=":id" element={<ReadQuestion/>} />
+            <Route path="new" element={<CreateQuestion />} />
+          </Route>
+        
+          <Route path="*" element={<NotFound />} />
         </Route>
-      
-        <Route path="*" element={<NotFound />} />
-      </Route>
-    </Routes>
+      </Routes>
+    </UserContext.Provider>
   );
 }
 
